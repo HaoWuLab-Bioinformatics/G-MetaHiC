@@ -31,8 +31,8 @@ def main():
     print(config)
     ASSEMBLY = config['assembly']
 
-    PTH = '/home/user_home/zhouxiangfei/chengxianjin/intermediate/'
-    SAVE_PTH = '/home/user_home/zhouxiangfei/chengxianjin/ChromaFold-main/chromafold/datasets/hic/zvalue/imr90'
+    PTH = './gmetahic/intermediate/'
+    SAVE_PTH = './gmetahic/datasets/hic/zvalue/imr90'
 
     hic_dict = {}
     hic_resolution = 10000
@@ -61,7 +61,7 @@ def main():
                         fill_value = 0)
         hic_dict[chrom] = csr_matrix(hic)
 
-    SAVE_PTH2 = '/home/user_home/zhouxiangfei/chengxianjin/ChromaFold-main/chromafold/datasets/hic/zvalue/imr90'
+    SAVE_PTH2 = './gmetahic/datasets/hic/zvalue/imr90'
     pickle.dump(hic_dict, open(f"{SAVE_PTH2}/normalized_hic_zscore_dict.p", "wb"), protocol=4)
 
 
