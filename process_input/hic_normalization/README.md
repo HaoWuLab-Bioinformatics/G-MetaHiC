@@ -13,7 +13,7 @@ Run the command to normalize your `.hic` file:
 
 ```
 cd ./data
-hic_file='./imr90.hic' resolution=10000 assembly='hg38' /chromafold/process_input/hic_normalization/hicdcplus/hicdcplus_normalization.sh
+hic_file='./imr90.hic' resolution=10000 assembly='hg38' /gmetahic/process_input/hic_normalization/hicdcplus/hicdcplus_normalization.sh
 ```
 
 This script consists of two steps:
