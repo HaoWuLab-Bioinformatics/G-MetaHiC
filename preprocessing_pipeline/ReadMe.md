@@ -1,6 +1,5 @@
 ## Data Preprocessing for G-MetaHiC 
 
-All processing steps have been summarized in [`fragment_to_input.sh`](https://drive.google.com/drive/folders/1s5FCXnRsgT4PzJgi16Ak3IFFE2B7Rp9Z) file. Below is a more detailed explanation of the steps. 
 
 ### **Step 0**. Filter and merge fragement files
 
