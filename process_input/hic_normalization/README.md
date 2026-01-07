@@ -28,7 +28,7 @@ If you have difficulties installing HiC-DC+ in the R environment, below is the a
 
 ### **Step 1**. Generate HiC-DC+ normalized z-score files
 
-- **Input:** HiC-DC+ requires assembly and resolution specific feature files for regression. Ready-to-use genomic features have been uploaded to [feature files](https://drive.google.com/drive/folders/1084P15MIrYeS13_ynpx2fbu11HTDszOt?usp=sharing). Please download them for normalization. 
+- **Input:** HiC-DC+ requires assembly and resolution specific feature files for regression. Ready-to-use genomic features have been uploaded to [feature files](https://drive.google.com/drive/folders/1YbSYEto5XSlEOrN33y4F6O3273vmpRmI). Please download them for normalization. 
 - **Software and tools:** please download [Straw](https://github.com/aidenlab/straw) for data extraction from `.hic` format. A ready-to-use `straw.cpp` can also be downloaded from [google drive](https://drive.google.com/drive/folders/11BSDjUA4fb9uLnAqSFXjKZWQbzVadSIn?usp=sharing).
 - **Script:** [`hicdcplus_run.R`](https://github.com/HaoWuLab-Bioinformatics/G-MetaHiC/blob/master/process_input/hic_normalization/without_installation/hicdcplus_run.R)
 
