@@ -4,7 +4,7 @@
 #
 # Usage
 #
-# Rscript /gmetahic/process input/hic_normalization/hicdcplus_run.R \
+# Rscript ./gmetahic/process input/hic_normalization/hicdcplus_run.R \
 # 10000 \
 # "./gmetahic/datasets/hicdc/hg38_MboI_10kb_features.rds" \
 # "./data/hic/imr90/hicdc/" \
@@ -15,8 +15,7 @@
 # "./gmetahic/datasets/hic/juicer_tools.1.9.9_jcuda.0.8.jar" \
 
 
-# source("~/hic_normalization/without_installation/hicdcplus_pipeline.R")
-# setwd("~/hicdc_workflow/without_installation/")
+
 source("~/process_input/hic_normalization/without_installation/hicdcplus_pipeline.R")
 setwd("~/process_input/hic_normalization/without_installation/")
 
@@ -53,7 +52,7 @@ hic2hicdc(hic_path = input_hic_file,
           # chrs = sprintf(c("chr2")),
           output_path = output_path)
 
-print(paste0("################ hic2hicdc 完毕 ################"))
+
 #########################################
 #      Step 2. HiCDC normalization      #
 #########################################
@@ -95,21 +94,10 @@ chrs = sprintf("chr%s", c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 
 
 
-print(paste0("hicdc2hic ****** zvalue完毕 ************* "))
 
 
 
-#2. Save qvalues (adjusted p-value for significant interactions)
 
 
 
-# hicdc2hic(input_path = output_path, jarfile = juicer_jar,
-# binsize = binsize, gen = gen, gen_ver = gen_ver,
-# mode = "qvalue",
-# # output_file = paste(output_path, "ENCFF281ILS_qvalue.hic", sep = ""),
-# output_file = paste(output_path, "gm12878_qvalue.hic", sep = ""),
-# chrs = sprintf("chr%s", c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-# 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, "X")))
-#
-#
-# print(paste0("hicdc2hic ****** qvalue完毕 ************* "))
+
