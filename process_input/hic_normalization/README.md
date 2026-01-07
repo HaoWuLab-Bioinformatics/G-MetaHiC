@@ -62,4 +62,4 @@ echo $i
 done
 ```
 
-These `.txt` files are used in the data integration step in the [notebook](https://github.com/viannegao/ChromaFold/blob/main/process%20input/Process%20Input%20-%20Hi-C.ipynb).
+These `.txt` files are used in the data integration step in the [notebook](https://github.com/HaoWuLab-Bioinformatics/G-MetaHiC/blob/master/process_input/Process%20Input%20-%20Hi-C.ipynb).
