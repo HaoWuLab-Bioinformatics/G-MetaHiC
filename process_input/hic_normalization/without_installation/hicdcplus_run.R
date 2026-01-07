@@ -3,28 +3,22 @@
 # Run HiC-DC+ to generate z-score normalized Hi-C library.
 #
 # Usage
-# screen
-# bsub -n 2 -W 10:00 -R 'span[hosts=1] rusage[mem=64]' -Is /bin/bash
-# source /miniconda3/etc/profile.d/conda.sh
-# conda activate chromafold_env
-# cd /chromafold/scripts
 #
-#
-# Rscript /chromafold/process input/hic_normalization/hicdcplus_run.R \
+# Rscript /gmetahic/process input/hic_normalization/hicdcplus_run.R \
 # 10000 \
-# "/scripts/hicdc_workflow/hg38_MboI_10kb_features.rds" \
-# "/data/HiC/imr90/hicdc_out/" \
+# "./gmetahic/datasets/hicdc/hg38_MboI_10kb_features.rds" \
+# "./data/hic/imr90/hicdc/" \
 # "Hsapiens" \
 # "hg38" \
-# "/data/HiC/imr90/ENCFF281ILS.hic" \
-# "scripts/hicdc_workflow/straw.cpp" \
-# "/scripts/hicdc_workflow/juicer_tools.1.9.9_jcuda.0.8.jar" \
+# "./data/hic/imr90/ENCFF281ILS.hic" \
+# "./gmetahic/datasets/hicdc/straw.cpp" \
+# "./gmetahic/datasets/hic/juicer_tools.1.9.9_jcuda.0.8.jar" \
 
 
-# source("~/scripts/hic_normalization/without_installation/hicdcplus_pipeline.R")
-# setwd("~/scripts/hicdc_workflow/without_installation/")
-source("~/chengxianjin/ChromaFold-main/process_input/hic_normalization/without_installation/hicdcplus_pipeline.R")
-setwd("~/chengxianjin/ChromaFold-main/process_input/hic_normalization/without_installation/")
+# source("~/hic_normalization/without_installation/hicdcplus_pipeline.R")
+# setwd("~/hicdc_workflow/without_installation/")
+source("~/process_input/hic_normalization/without_installation/hicdcplus_pipeline.R")
+setwd("~/process_input/hic_normalization/without_installation/")
 
 args <- commandArgs(trailing = TRUE)
 
