@@ -82,8 +82,8 @@ Rscript "${SCRIPT_DIR}"/ArchR_preparation.R \
 ```
 ### **Step 2**. Calculate tile files using [ArchR](https://www.archrproject.com/bookdown/co-accessibility-with-archr.html)
 
-- **Input:** sorted bgzip fragment file created in previous step, LSI file created in previous step, and barcode file (example barcode file can be found in [google drive](https://drive.google.com/file/d/1rQRQtE8kRpdGAfT04mx2iUbvfvJcuHjW/view?usp=sharing))
-- **Script:** [`scATAC_preparation.py`](https://github.com/viannegao/ChromaFold/blob/main/preprocessing_pipeline/scATAC_preparation.py)
+- **Input:** sorted bgzip fragment file created in previous step, LSI file created in previous step, and barcode file (example barcode file can be found in [google drive](https://drive.google.com/drive/folders/1s5FCXnRsgT4PzJgi16Ak3IFFE2B7Rp9Z)
+- **Script:** [`scATAC_preparation.py`](https://github.com/HaoWuLab-Bioinformatics/G-MetaHiC/blob/master/preprocessing_pipeline/scATAC_preparation.py)
 ```
 python "${SCRIPT_DIR}"/scATAC_preparation.py \
 --cell_type_prefix "${DATA_PREFIX}" \
