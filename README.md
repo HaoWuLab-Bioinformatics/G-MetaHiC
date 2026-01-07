@@ -32,7 +32,7 @@ G-MetaHiC is a granular-ball metacell based deep learning framework for predicti
 ```
 git clone https://github.com/HaoWuLab-Bioinformatics/G-MetaHiC
 
-pip install -r requirements.txt
+conda env update -f gmetahic.yml
 ```
 
 # Usage
