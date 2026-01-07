@@ -21,7 +21,7 @@ G-MetaHiC is a granular-ball metacell based deep learning framework for predicti
 
 # Installation
 ```
-git clone https://github.com/HaoWuLab-Bioinformatics/GRANet
+git clone https://github.com/HaoWuLab-Bioinformatics/G-MetaHiC
 
 pip install -r requirements.txt
 ```
