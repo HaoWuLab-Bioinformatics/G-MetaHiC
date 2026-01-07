@@ -3,10 +3,10 @@ G-MetaHiC: A granular-ball metacell deep learning framework for predicting Hi-C 
 
 # Overview
 G-MetaHiC is a granular-ball metacell based deep learning framework for predicting Hi-C contact maps from single-cell ATAC-seq data. It integrated:
-- 基于粒球的元细胞构建方法
-- 基于transformer和旋转位置编码捕获伪批量scATAC-seq的长程依赖的伪批量编码器模块
-- 基于GCN学习元细胞之间图表示的元细胞编码器模块
-- 基于交叉多头注意力机制的特征融合模块
+- a granular-ball–based metacell construction strategy
+- a pseudo-bulk encoder module based on Transformer architecture with rotary positional embeddings to capture long-range dependencies in pseudo-bulk scATAC-seq signals
+- a metacell encoder module based on graph convolutional networks (GCNs) to learn graph representations among metacells
+- a feature fusion module based on cross multi-head attention mechanisms
 
 ## Framework of G-MetaHiC
 <img width="1020" height="720" alt="Fig1_modified_version2" src="https://github.com/user-attachments/assets/a3668c1e-ede9-4b62-b71d-4a3e61379754" />
