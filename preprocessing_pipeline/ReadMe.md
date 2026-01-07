@@ -68,7 +68,7 @@ mkdir -p predictions
 ```
 #### Copy CTCF motif score to the designated folder 
 
-CTCF motif data for each genome assembly can be found at [google drive](https://drive.google.com/drive/folders/1TlfXGix2U-K1UIrOYv8gWGIiSx10dP3M?usp=sharing)
+CTCF motif data for each genome assembly can be found at [google drive](https://drive.google.com/drive/folders/16zgPAc1TGMWvkyouswQpvZcVqo7_HKla)
 ```
 cp /home/data/dna/* "${SAVE_LOC}"/dna/
 ```
