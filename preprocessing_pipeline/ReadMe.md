@@ -103,7 +103,7 @@ Until this step, we have all the input files ready for G-MetaHiC predictions. A 
 - `ctcf`: including CTCF motif data, `hg38_ctcf_motif_score.p`
 - `prediction`: where G-MetaHiC predictions will be saved in.
 
-An example data folder can be found at [google drive](https://drive.google.com/drive/folders/1ot0u8GDWvku9_XS7Cxk_QyYUyBQrAM32?usp=sharing)
+An example data folder can be found at [google drive](https://drive.google.com/drive/folders/1omErCNpYxkrFI6FTUsRpz43patCVcQfH)
 
 
 
