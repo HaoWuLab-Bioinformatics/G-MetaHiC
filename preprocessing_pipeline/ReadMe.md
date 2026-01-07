@@ -9,7 +9,7 @@ All processing steps have been summarized in [`fragment_to_input.sh`](https://gi
 
 Filter and merge fragments of a specific cell type from multiple fragment datasets. In the example data from google drive, since we only have a single scATAC-seq fragment dataset, we will skip this step. 
 
-### **Step 1**. Run [ArchR](https://www.archrproject.com/bookdown/co-accessibility-with-archr.html) to calculate co-accessibility
+### **Step 1**. Run [ArchR](https://drive.google.com/drive/folders/1s5FCXnRsgT4PzJgi16Ak3IFFE2B7Rp9Z) to calculate co-accessibility
 
 - **Input:** scATAC-seq fragment file from [google drive](https://drive.google.com/drive/folders/1ZDwumdoC-9lqsVEHUeBs4euN8xcBelhu?usp=sharing)
 - **Packages:** [ArchR](https://www.archrproject.com/bookdown/co-accessibility-with-archr.html) for creating co-accessibility matrix, [Samtools](https://www.htslib.org/) and [bedtools2](https://github.com/arq5x/bedtools2) for converting data format.
