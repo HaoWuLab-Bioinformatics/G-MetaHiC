@@ -98,63 +98,6 @@ head(gi_list$chr1)
 #      Step 3. Save results      #
 ##################################
 ## -----------------------------------------------  ##
-hicdc2hic <- function(gi_list, hicfile, mode = "normcounts", chrs = NULL, gen_ver = "hg19", memory=8) {
-    options(scipen = 9999)
-    #set memory limit to max if i386
-    if (.Platform$OS.type=='windows'&Sys.getenv("R_ARCH")=="/i386") {
-        gc(reset=TRUE,full=TRUE)
-        utils::memory.limit(size=4095)
-    }
-    gi_list_validate(gi_list)
-    binsize<-gi_list_binsize_detect(gi_list)
-    if (is.null(chrs))
-        chrs <- names(gi_list)
-    tmpfile <- paste0(base::tempfile(), ".txt")
-    gi_list_write(gi_list, tmpfile, columns = "minimal_plus_score", score = mode)
-   
-    file_content <- readLines(tmpfile)
-    data_lines <- file_content[-1]  
-    writeLines(data_lines, tmpfile)
-
-    #generate path to the file if not exists
-    hicdc2hicoutput <- path.expand(hicfile)
-    hicdc2hicoutputdir<-gsub("/[^/]+$", "",hicdc2hicoutput)
-    if (hicdc2hicoutputdir==hicdc2hicoutput){
-        hicdc2hicoutputdir<-gsub("\\[^\\]+$", "",hicdc2hicoutput)
-    }
-    if (hicdc2hicoutputdir==hicdc2hicoutput){
-        hicdc2hicoutputdir<-gsub("\\\\[^\\\\]+$", "",hicdc2hicoutput)
-    }
-    if (!hicdc2hicoutputdir==hicdc2hicoutput&!dir.exists(hicdc2hicoutputdir)){
-        dir.create(hicdc2hicoutputdir, showWarnings = FALSE, recursive = TRUE, mode = "0777")
-    }
-    # run pre
-    jarpath<-.download_juicer()
-    ifelse(.Platform$OS.type=='windows'&Sys.getenv("R_ARCH")=="/i386",min(memory,2),memory)
-    if (mode=="zvalue"){
-        #make sure negative values get processed
-        system2("java", args = c(paste0("-Xmx",as.character(memory),"g"), "-jar",
-                                 path.expand(jarpath), "pre", "-v", "-d", "-n",
-                                 "-r", binsize,
-                                 "-m", -2147400000,
-                                 path.expand(tmpfile), path.expand(hicdc2hicoutput),
-                                 gen_ver))
-    } else {
-    system2("java", args = c(paste0("-Xmx",as.character(memory),"g"), "-jar",
-                             path.expand(jarpath), "pre", "-v", "-d",
-                             "-r", binsize, path.expand(tmpfile),
-                             path.expand(hicdc2hicoutput),
-                             gen_ver))
-    }
-    # remove file
-    system2("rm", args = path.expand(tmpfile))
-    return(hicdc2hicoutput)
-}
-
-
-
-
-
 # write normalized counts (observed/expected) to a .hic file
 hicdc2hic(gi_list,
 hicfile = paste0(outpth, "normalized.hic"),
