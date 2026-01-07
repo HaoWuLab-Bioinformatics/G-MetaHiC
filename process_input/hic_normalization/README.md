@@ -30,18 +30,18 @@ If you have difficulties installing HiC-DC+ in the R environment, below is the a
 
 - **Input:** HiC-DC+ requires assembly and resolution specific feature files for regression. Ready-to-use genomic features have been uploaded to [feature files](https://drive.google.com/drive/folders/1084P15MIrYeS13_ynpx2fbu11HTDszOt?usp=sharing). Please download them for normalization. 
 - **Software and tools:** please download [Straw](https://github.com/aidenlab/straw) for data extraction from `.hic` format. A ready-to-use `straw.cpp` can also be downloaded from [google drive](https://drive.google.com/drive/folders/11BSDjUA4fb9uLnAqSFXjKZWQbzVadSIn?usp=sharing).
-- **Script:** [`hicdcplus_run.R`](https://github.com/viannegao/ChromaFold/blob/main/process%20input/hic_normalization/hicdcplus_run.R)
+- **Script:** [`hicdcplus_run.R`](https://github.com/HaoWuLab-Bioinformatics/G-MetaHiC/blob/master/process_input/hic_normalization/without_installation/hicdcplus_run.R)
 
 ```
-Rscript /gmetahic/process_input/hic_normalization/without_installation/hicdcplus_run.R \
+Rscript ./gmetahic/process_input/hic_normalization/without_installation/hicdcplus_run.R \
 10000 \
-"/scripts/hicdc_workflow/hg38_MboI_10kb_features.rds" \
-"/data/HiC/imr90/hicdc_out/" \
+"./gmetahic/datasets/hicdc/hg38_MboI_10kb_features.rds" \
+"./data/HiC/imr90/hicdc_out/" \
 "Hsapiens" \
 "hg38" \
-"/data/HiC/imr90/ENCFF281ILS.hic" \
-"scripts/hicdc_workflow/straw.cpp" \
-"/scripts/hicdc_workflow/juicer_tools.1.9.9_jcuda.0.8.jar" 
+"./data/hic/imr90/ENCFF281ILS.hic" \
+"./gmetahic/datasets/hicdc/straw.cpp" \
+"./gmetahic/datasets/hic/juicer_tools.1.9.9_jcuda.0.8.jar" 
 ```
 
 After this step, HiC-DC+ normalized files are successfully generated, including 
@@ -54,9 +54,9 @@ After this step, HiC-DC+ normalized files are successfully generated, including
 for i in {1..22}
 do
 
-java -jar  /scripts/hicdc_workflow/juicer_tools_1.22.01.jar dump observed NONE /data/HiC/imr90/ENCFF281ILS_zvalue.hic $i $i BP 10000 /data/HiC/imr90/hicdc_out/zvalue/chr"$i"_raw.txt
+java -jar  ./gmetahic/datasets/hic/juicer_tools_1.22.01.jar dump observed NONE ./data/HiC/imr90/ENCFF281ILS_zvalue.hic $i $i BP 10000 ./data/hic/imr90/hicdc_out/zvalue/chr"$i"_raw.txt
 
-java -jar  /scripts/hicdc_workflow/juicer_tools_1.22.01.jar dump observed NONE /data/HiC/imr90/ENCFF281ILS_qvalue.hic $i $i BP 10000 /data/HiC/imr90/hicdc_out/qvalue/chr"$i"_raw.txt
+java -jar  ./gmetahic/datasets/hic/juicer_tools_1.22.01.jar dump observed NONE ./data/HiC/imr90/ENCFF281ILS_qvalue.hic $i $i BP 10000 ./data/hic/imr90/hicdc_out/qvalue/chr"$i"_raw.txt
 echo $i
 
 done
