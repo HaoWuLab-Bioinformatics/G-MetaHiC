@@ -1,19 +1,14 @@
 #hicdc+ for normalization
 #
 # Usage
-# screen
-# bsub -n 2 -W 10:00 -R 'span[hosts=1] rusage[mem=128]' -Is /bin/bash
-# source /miniconda3/etc/profile.d/conda.sh
-# conda activate chromafold_env
-# cd ./hic_normalization
 #
 # Rscript ./hicdcplus/step1_hicdcplus_normalization_run.R \
 # imr90.hic \
 # 10000 \
 # 'hg38'
 
-# Rscript /home/user_home/zhouxiangfei/chengxianjin/ChromaFold-main/process_input/hic_normalization/hicdcplus/step1_hicdcplus_normalization_run.R \
-# "/home/user_home/zhouxiangfei/chengxianjin/ChromaFold-main/chromafold/datasets/hic/ENCFF843MZF.hic" \
+# Rscript ./process_input/hic_normalization/hicdcplus/step1_hicdcplus_normalization_run.R \
+# "./gmetahic/datasets/hic/ENCFF843MZF.hic" \
 # 10000 \
 # "hg38"
 
@@ -62,8 +57,8 @@ if (assembly %in% c("mm9", "mm10")) {
   print("Species not match")
 }
 
-outdir <- "~/chengxianjin/features/"
-outpth <- "~/chengxianjin/intermediate/"
+outdir <- "~/features/"
+outpth <- "~/intermediate/"
 
 ########################################
 #      Step 1. Construct features      #
@@ -103,7 +98,7 @@ head(gi_list$chr1)
 #      Step 3. Save results      #
 ##################################
 ## -----------------------------------------------  ##
-hicdc2hic_cheng <- function(gi_list, hicfile, mode = "normcounts", chrs = NULL, gen_ver = "hg19", memory=8) {
+hicdc2hic <- function(gi_list, hicfile, mode = "normcounts", chrs = NULL, gen_ver = "hg19", memory=8) {
     options(scipen = 9999)
     #set memory limit to max if i386
     if (.Platform$OS.type=='windows'&Sys.getenv("R_ARCH")=="/i386") {
@@ -116,9 +111,9 @@ hicdc2hic_cheng <- function(gi_list, hicfile, mode = "normcounts", chrs = NULL, 
         chrs <- names(gi_list)
     tmpfile <- paste0(base::tempfile(), ".txt")
     gi_list_write(gi_list, tmpfile, columns = "minimal_plus_score", score = mode)
-    ### 把标题行去掉
+   
     file_content <- readLines(tmpfile)
-    data_lines <- file_content[-1]  # 删除标题行
+    data_lines <- file_content[-1]  
     writeLines(data_lines, tmpfile)
 
     #generate path to the file if not exists
@@ -165,10 +160,6 @@ hicdc2hic(gi_list,
 hicfile = paste0(outpth, "normalized.hic"),
           mode = "zvalue", gen_ver = assembly)
 
-# 调用修改的hicdc2hic
-# hicdc2hic_cheng(gi_list,
-# hicfile = paste0(outpth, "normalized.hic"),
-#           mode = "zvalue", gen_ver = assembly)
 
 # write results to a text file
 gi_list_write(gi_list,
