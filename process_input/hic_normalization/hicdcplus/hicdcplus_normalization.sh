@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Usage
-# bash ChromaFold/process_input/hicdc_normalization/hicdcplus_normalization.sh \
+# bash ./gmetahic/process_input/hicdc_normalization/hicdcplus_normalization.sh \
 # hic_file='imr90.hic'
 # resolution=10000
 # assembly='hg38'
 
-SCRIPT_DIR="/chromafold/process_input/hic_normalization/hicdcplus"
+SCRIPT_DIR="./gmetahic/process_input/hic_normalization/hicdcplus"
 
 # Ensure required variables are set
 if [ -z "$hic_file" ] || [ -z "$resolution" ] || [ -z "$assembly" ]; then
@@ -26,10 +26,6 @@ cd ./hicdc_normalization
 #1. Step 1. Use HiC-DC+ to calculate normalization
 
 # Usage
-# screen
-source /miniconda3/etc/profile.d/conda.sh
-conda activate chromafold_env
-cd /chromafold/scripts
 
 Rscript "${SCRIPT_DIR}"/step1_hicdcplus_normalization_run.R \
 "$hic_file" \
