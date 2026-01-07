@@ -13,7 +13,7 @@ Filter and merge fragments of a specific cell type from multiple fragment datase
 
 - **Input:** scATAC-seq fragment file from [google drive](https://drive.google.com/drive/folders/1ZDwumdoC-9lqsVEHUeBs4euN8xcBelhu?usp=sharing)
 - **Packages:** [ArchR](https://www.archrproject.com/bookdown/co-accessibility-with-archr.html) for creating co-accessibility matrix, [Samtools](https://www.htslib.org/) and [bedtools2](https://github.com/arq5x/bedtools2) for converting data format.
-- **Script:** [`ArchR_preparation.R`](https://github.com/viannegao/ChromaFold/blob/main/preprocessing_pipeline/ArchR_preparation.R)
+- **Script:** [`ArchR_preparation.R`](https://github.com/HaoWuLab-Bioinformatics/G-MetaHiC/blob/master/preprocessing_pipeline/ArchR_preparation.R)
 
 #### **Define arguments**
 ```
