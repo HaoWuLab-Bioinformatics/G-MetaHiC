@@ -69,204 +69,7 @@ get_chrs<-function(gen="Hsapiens",gen_ver="hg38"){
 #'@export
 
 
-# Rcpp::sourceCpp("/home/chengxianjin/projects/ChromaFold-main/chromafold/datasets/hicdc/straw.cpp")
-# hic2hicdc <-
-#   function(hic_path,
-#            bintolen_path,
-#            straw_path,
-#            gen = "Hsapiens",
-#            gen_ver = "hg38",
-#            binsize = 5000,
-#            Dthreshold = 2000000,
-#            bin_type = "Bins-uniform",
-#            inter = FALSE,
-#            chrs = NULL,
-#            output_path) {
-#     options(scipen = 9999)
-#     #get straw
-#     Sys.setenv(PKG_LIBS = "-lcurl")
-#     # suppressWarnings({Rcpp::sourceCpp(path.expand(straw_path))})
-#     suppressWarnings({Rcpp::sourceCpp(path.expand("/home/user_home/zhouxiangfei/chengxianjin/ChromaFold-main/chromafold/datasets/hicdc/straw.cpp"))})
-#     # Rcpp::sourceCpp("/home/chengxianjin/projects/ChromaFold-main/chromafold/datasets/hicdc/straw.cpp")
-#
-#     #get list of chromosomes and their sizes
-#     if (is.null(chrs)) {
-#       chrom <- get_chrs(gen,gen_ver)
-#     } else{
-#       chrom <- chrs
-#     }
-#     genome_chromSizes <- data.frame(chr = chrom,
-#                                     size = get_chr_sizes(gen,gen_ver,chrom))
-#
-#
-#
-#     # chengxj
-#     # genome_chromSizes$chr <- sub("^chr", "", genome_chromSizes$chr)
-#
-#
-#     # chrs <- gsub('chr', '', chrom) ######################### change chrom format
-#     chrs <- chrom
-#
-#     # chengxj
-#     # genome_chromSizes$chr <- sub("^chr", "", genome_chromSizes$chr)
-#     # chrs <- sub("^chr", "", chrs)
-#     # print(head(genome_chromSizes$chr))
-#     # print(chrs)
-#
-#
-#     #get bintolen
-#     if (base::grepl('.txt',bintolen_path,ignore.case = TRUE)){
-#       bintolen <- data.table::fread(bintolen_path,
-#                                     sep = "\t",
-#                                     header = TRUE,
-#                                     stringsAsFactors = FALSE
-#       )
-#     }else if (base::grepl('.rds',bintolen_path,ignore.case = TRUE)){
-#       bintolen<-readRDS(bintolen_path)
-#     }
-#     #prepare bintolen
-#     bintolen <- bintolen %>% tidyr::separate("bins",
-#                                              c("chr", "start", "end"),
-#                                              sep = "-",
-#                                              remove = FALSE,
-#                                              convert = TRUE,
-#                                              extra = "drop",
-#                                              fill = "warn"
-#     )
-#
-#     # chengxj
-#     # bintolen <- bintolen %>%
-#     #   dplyr::mutate(
-#     #   # 移除chr列中的"chr"前缀
-#     #   chr = sub("^chr", "", chr)
-#     #   )
-#
-#
-#
-#
-#     #modify output path (get string between last / and .)
-#     hic_preamble <- rev(regmatches(hic_path,regexec('(.*?)/(.*?)\\.',
-#                                                     hic_path))[[1]])[1]
-#     output_path <- paste0(output_path, hic_preamble)
-#     filepaths = NULL
-#     for (chr in chrs) {
-#       print(chr)
-#       print(paste0("Processing chromosome: ", chr))
-#       #process bintolen for the chr
-#       #filter bintolen to the chr
-#       bintolen_chr <- bintolen[bintolen$chr == chr, ]
-#       chrom_size <- genome_chromSizes[
-#         genome_chromSizes$chr == chr, ]$size
-#       #get all possible start values for the chr and complete bintolen
-#       starts <- data.frame(start = seq(1,
-#                                        genome_chromSizes[genome_chromSizes$chr == chr, ]$size,
-#                                        binsize))
-#       bintolen_chr <- dplyr::left_join(starts, bintolen_chr)
-#       rm(starts)
-#       bintolen_chr<-bintolen_chr%>%tidyr::replace_na(list(gc=0,map=0,len=0,
-#                                                           chr=chr))
-#       bintolen_chr<-bintolen_chr%>%dplyr::mutate(
-#         start=floor(.data$start/1000)*1000,
-#         end=pmin(.data$start+ binsize, chrom_size),
-#         mid=(.data$start + .data$end) / 2,
-#         bin=paste0(.data$chr,"-",.data$start,"-",.data$end),
-#         bins=NULL)
-#       #get all bin combinations within distance threshold
-#       print("Generating the features matrix")
-#       numbins<-nrow(bintolen_chr)
-#       maxbins<-ceiling(Dthreshold/binsize)
-#       index1<-unlist(sapply(1:numbins,
-#                             function(x) rep(x,min(maxbins+1,numbins-x+1))))
-#       index2<-unlist(sapply(1:numbins,
-#                             function(x) seq(x,min(x+maxbins,numbins),1)))
-#       bintolen_chr<-dplyr::bind_cols(
-#         (bintolen_chr%>%dplyr::rename_all(
-#           function(x) paste0(x,"I")))[index1,],
-#         (bintolen_chr%>%dplyr::rename_all(
-#           function(x) paste0(x,"J")))[index2,]
-#       )
-#       rm(index1,index2)
-#       bintolen_chr<-bintolen_chr%>%dplyr::mutate(D=abs(.data$midI-.data$midJ))
-#       bintolen_chr<-bintolen_chr%>%dplyr::filter(D<=Dthreshold)
-#       cols_bintolen_chr<-c("binI","binJ","chrI","chrJ","startI","startJ",
-#                            "endI","endJ","gcI","gcJ","mapI","mapJ","lenI","lenJ","D")
-#       bintolen_chr<-bintolen_chr[cols_bintolen_chr]
-#       gc()
-#       print("Generated. Incorporating counts.")
-#       # chr_straw <- sub("^chr", "", chr)
-#       count_matrix <- straw(
-#         norm = 'NONE',
-#         fname = path.expand(hic_path),
-#         binsize = binsize,
-#         chr1loc = chr,
-#         chr2loc = chr,
-#         unit = 'BP')
-#       colnames(count_matrix) <- c("startI", "startJ", "counts")
-#       count_matrix <-count_matrix %>% dplyr::mutate(
-#         chrI = chr,
-#         chrJ = chr,
-#         startI = .data$startI,
-#         startJ = .data$startJ
-#       )
-#       bintolen_chr <- dplyr::left_join(bintolen_chr,
-#                                        count_matrix) %>%
-#         tidyr::replace_na(list(counts = 0))
-#       rm(count_matrix)
-#       if (inter) {
-#         print("Incorporated. Incorporating interchromosomal counts.")
-#         count_matrix <- NULL
-#         for (chr2 in chrs) {
-#           if (chr2 != chr) {
-#             count_matrix_add <- unique(
-#               straw(
-#                 norm = 'NONE',
-#                 fname = path.expand(hic_path),
-#                 binsize = binsize,
-#                 chr1loc = chr,
-#                 chr2loc = chr2,
-#                 unit = 'BP'))
-#             xmax <- max(count_matrix_add[, 1])
-#             ymax <- max(count_matrix_add[, 2])
-#             if (abs(chrom_size - xmax) <= abs(chrom_size - ymax)) {
-#               count_matrix_add <- count_matrix_add[, c(1, 3)]
-#             } else {
-#               count_matrix_add <- count_matrix_add[, c(2, 3)]
-#
-#             }
-#             colnames(count_matrix_add) <- c("start", "inter")
-#             count_matrix <- dplyr::bind_rows(count_matrix, count_matrix_add)
-#           }
-#         }
-#         rm(count_matrix_add)
-#         count_matrix <- count_matrix %>% dplyr::group_by(.data$start) %>%
-#           dplyr::summarize(inter = sum(.data$inter)) %>%
-#           dplyr::mutate(start = .data$start)
-#         bintolen_chr <-
-#           dplyr::left_join(bintolen_chr,
-#                            count_matrix %>%
-#                              dplyr::rename("startI" = "start", "interI" = "inter")) %>%
-#           tidyr::replace_na(list(interI = 0))
-#         bintolen_chr <-
-#           dplyr::left_join(bintolen_chr,
-#                            count_matrix %>%
-#                              dplyr::rename("startJ" = "start", "interJ" = "inter")) %>%
-#           tidyr::replace_na(list(interJ = 0))}
-#       print("Incorporated. Printing to file.")
-#       filepath <- paste0(output_path, '_', binsize/1000, 'kb_', chr, '_matrix.txt')
-#       data.table::fwrite(bintolen_chr,filepath,
-#                          quote = FALSE,
-#                          sep = "\t",
-#                          row.names = FALSE)
-#       rm(bintolen_chr)
-#       gc()
-#       print(paste0("Chromosome: ", chr, " processed."))
-#       filepaths <- append(filepaths, paste0(filepath))
-#     }
-#     return(filepaths)
-#   }
-
-
-
+# Rcpp::sourceCpp("./gmetahic/datasets/hicdc/straw.cpp")
 
 hic2hicdc <-
   function(hic_path,
@@ -284,18 +87,7 @@ hic2hicdc <-
     Sys.setenv(PKG_LIBS = "-lcurl")
 
     suppressWarnings({ Rcpp::sourceCpp(path.expand(straw_path)) })
-    # ORIG:
-    # suppressWarnings({Rcpp::sourceCpp(path.expand("/home/user_home/zhouxiangfei/chengxianjin/ChromaFold-main/chromafold/datasets/hicdc/straw.cpp"))})
-
-    # ========== 0) 统一“内部命名”为无前缀 1..22/X ==========
-    # ORIG:
-    # if (is.null(chrs)) {
-    #   chrom <- get_chrs(gen,gen_ver)
-    # } else{
-    #   chrom <- chrs
-    # }
-    # genome_chromSizes <- data.frame(chr = chrom,
-    #                                 size = get_chr_sizes(gen,gen_ver,chrom))
+    
 
     if (is.null(chrs)) {
       chrom_plain <- sub("^chr", "", get_chrs(gen, gen_ver))  # -> "1","2",...,"X"
@@ -304,7 +96,7 @@ hic2hicdc <-
       chrom_plain <- sub("^chr", "", chrom_plain)
     }
 
-    # ========== 1) 读入 bintolen，并统一无前缀 ==========
+    
     if (base::grepl(".txt", bintolen_path, ignore.case = TRUE)) {
       bintolen <- data.table::fread(
         bintolen_path, sep = "\t", header = TRUE, stringsAsFactors = FALSE
@@ -322,12 +114,12 @@ hic2hicdc <-
       ) %>%
       dplyr::mutate(chr = sub("^chr", "", .data$chr))
 
-    # ========== 2) 构建 genome_chromSizes（内部存无前缀；三重回退） ==========
-    size1 <- suppressWarnings(as.numeric(get_chr_sizes(gen, gen_ver, paste0("chr", chrom_plain)))) # 尝试带前缀
-    size2 <- suppressWarnings(as.numeric(get_chr_sizes(gen, gen_ver, chrom_plain)))                 # 再试无前缀
+
+    size1 <- suppressWarnings(as.numeric(get_chr_sizes(gen, gen_ver, paste0("chr", chrom_plain)))) 
+    size2 <- suppressWarnings(as.numeric(get_chr_sizes(gen, gen_ver, chrom_plain)))                 
     size  <- ifelse(is.finite(size1), size1, size2)
 
-    # 用 bintolen 兜底：按无前缀 chr 求最大 end
+ 
     if (any(!is.finite(size))) {
       derived <- tapply(bintolen$end, bintolen$chr, max, na.rm = TRUE)
       miss <- which(!is.finite(size))
@@ -340,7 +132,7 @@ hic2hicdc <-
     }
 
     genome_chromSizes <- data.frame(
-      chr  = chrom_plain,   # 无前缀
+      chr  = chrom_plain,  
       size = size,
       stringsAsFactors = FALSE
     )
@@ -348,19 +140,15 @@ hic2hicdc <-
     message('[genome_chromSizes (plain)]')
     print(head(genome_chromSizes))
 
-    # ORIG（多余的去前缀操作保留注释）:
-    # genome_chromSizes$chr <- sub("^chr", "", genome_chromSizes$chr)
-    # chrs <- chrom
-    # genome_chromSizes$chr <- sub("^chr", "", genome_chromSizes$chr)
-    # chrs <- sub("^chr", "", chrs)
+   
+  
 
-    # ========== 3) 输出路径前缀 ==========
     hic_preamble <- rev(regmatches(hic_path, regexec("(.*?)/(.*?)\\.", hic_path))[[1]])[1]
     output_path <- paste0(output_path, hic_preamble)
 
     filepaths <- NULL
 
-    # ========== 4) straw 调用的兜底封装（先无前缀，失败再加 chr） ==========
+
     do_straw_intra <- function(chr_plain) {
       res <- try(straw(
         norm    = "NONE",
@@ -405,18 +193,16 @@ hic2hicdc <-
       res
     }
 
-    # ========== 5) 主循环（内部全程无前缀） ==========
+
     for (chr in chrom_plain) {
       message("Processing chromosome: ", chr)
 
-      # bintolen 过滤（无前缀匹配）
       bintolen_chr <- bintolen[bintolen$chr == chr, ]
 
-      # 染色体长度（断言必须有限）
+   
       chrom_size <- as.numeric(genome_chromSizes$size[genome_chromSizes$chr == chr])
       if (!is.finite(chrom_size)) stop("chrom_size is NA/Inf for chr=", chr)
 
-      # 生成 starts 并补齐 bintolen
       starts <- data.frame(start = seq(1, chrom_size, binsize))
       bintolen_chr <- dplyr::left_join(starts, bintolen_chr)
       rm(starts)
@@ -431,7 +217,7 @@ hic2hicdc <-
           bins  = NULL
         )
 
-      # 生成 (i,j) 组合
+    
       message("Generating the features matrix")
       numbins <- nrow(bintolen_chr)
       maxbins <- ceiling(Dthreshold / binsize)
@@ -452,7 +238,7 @@ hic2hicdc <-
       bintolen_chr <- bintolen_chr[cols_bintolen_chr]
       gc()
 
-      # 同染色体 counts（straw 兜底）
+   
       message("Generated. Incorporating counts.")
       count_matrix <- do_straw_intra(chr)
       colnames(count_matrix) <- c("startI", "startJ", "counts")
@@ -463,7 +249,7 @@ hic2hicdc <-
         tidyr::replace_na(list(counts = 0))
       rm(count_matrix)
 
-      # 跨染色体（inter=TRUE）
+    
       if (inter) {
         message("Incorporating interchromosomal counts.")
         count_matrix <- NULL
@@ -499,9 +285,6 @@ hic2hicdc <-
       }
 
       message("Incorporated. Printing to file.")
-      # 文件名也使用无前缀
-      # ORIG:
-      # filepath <- paste0(output_path, '_', binsize/1000, 'kb_', chr, '_matrix.txt')
       filepath <- paste0(output_path, "_", binsize/1000, "kb_", chr, "_matrix.txt")
 
       data.table::fwrite(
@@ -549,16 +332,12 @@ hicdcplus_model=function(file="matrix.rds",
       strip_glm(MASS::glm.nb( 
         model.formula, 
         data
-        # chengxj  一行
-        # ,control = glm.control(maxit= 200,trace = TRUE)
       ))
     }, error = function(e) {
       temp.model <- MASS::glm.nb( 
         model.formula, 
         data,
         init.theta = theta.init
-        #chengxj  一行
-        # ,control = glm.control(maxit= 200,trace = TRUE)
         )
       return(temp.model)
     }
@@ -654,8 +433,6 @@ hicdcplus_model=function(file="matrix.rds",
         y <- as.numeric(unlist(new.x[, paste0(cov, 'J')]))
         return(list(x = x, y = y))})
     new.x[, cov] <- transform.vec(result$x, result$y)
-    # chengxj 替换非有限值为NA
-    # new.x[[cov]][!is.finite(new.x[[cov]])] <- NA
     ix <- ix & is.finite(unlist(new.x[, cov, with=FALSE])) #& !is.na(unlist(new.x[, cov, with=FALSE]))
     rm(result)
   }
@@ -772,7 +549,7 @@ hicdc2hic<-function(input_path,jarfile,
   preinputpath<-path.expand(paste0(input_path,'_normcounts.txt'))
   preoutputpath<-path.expand(output_file)
 
-  # modify
+ 
   all_data <- list()
 
 
@@ -815,9 +592,6 @@ hicdc2hic<-function(input_path,jarfile,
                     .data$chrJ,.data$startJ,.data$fragJ,.data$score)
 
 
-    ######
-    # modify
-    # 转换chrI和chrJ为数值以调整顺序
     norm_data <- norm_data %>%
       dplyr::mutate(
         chrI_num = as.numeric(factor(chrI, levels = c(1:22, "X"))),
@@ -827,7 +601,7 @@ hicdc2hic<-function(input_path,jarfile,
 
 
       dplyr::mutate(
-        # 交换chrI和chrJ如果chrI_num > chrJ_num
+        
         temp_chrI = ifelse(chrI_num > chrJ_num, chrJ, chrI),
         temp_chrJ = ifelse(chrI_num > chrJ_num, chrI, chrJ),
         temp_startI = ifelse(chrI_num > chrJ_num, startJ, startI),
@@ -841,14 +615,14 @@ hicdc2hic<-function(input_path,jarfile,
       ) %>%
       dplyr::select(-temp_chrI, -temp_chrJ, -temp_startI, -temp_startJ, -chrI_num, -chrJ_num)
 
-    # 将处理后的数据添加到列表
+    
       all_data[[chr]] <- norm_data
       print(paste0("Processed data for chr: ", chr))
 
   }
-  # 合并所有数据并按染色体排序
-  ###### modify
-  # source
+
+
+
   combined_data <- data.table::rbindlist(all_data) %>%
     dplyr::mutate(
       chrI_num = as.numeric(factor(chrI, levels = c(1:22, "X"))),
@@ -858,20 +632,15 @@ hicdc2hic<-function(input_path,jarfile,
     dplyr::select(-chrI_num, -chrJ_num)
 
 
-  # 写入预处理文件
-  ###### modify
+ 
+  
   data.table::fwrite(combined_data, file = preinputpath, sep = "\t",quote = FALSE, row.names = FALSE, col.names = FALSE)
 
 
-    #dump output to file ----- source code
-    # data.table::fwrite(x=norm_data,file=preinputpath,append=TRUE,quote=FALSE,
-    #                    sep="\t",row.names=FALSE,col.names=FALSE)
-    # print(paste0("Output generated for chr: ", chr))
-  # }
 
 
 
-  #run pre
+
   if (mode=="zvalue"){
     #make sure negative values get processed
    system2("java", args = c('-Xmx8g', '-jar',
@@ -888,11 +657,6 @@ hicdc2hic<-function(input_path,jarfile,
                             gen_ver))
  }
 
-  #system2('java',args=c('-Xmx8g', '-jar' ,path.expand(jarfile),
-  #'pre','-v','-d',path.expand(preinputpath),path.expand(preoutputpath),
-  #gen_ver))
-  #remove file
-  #system2('rm',args=path.expand(preinputpath))
 }
 
 
